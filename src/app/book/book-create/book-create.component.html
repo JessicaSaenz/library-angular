@@ -1,0 +1,106 @@
+<div class="dialog-content-wrapper">
+    <mat-toolbar matDialogTitle>
+        <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+            <span>{{dialogTitle}}</span>
+            <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <div mat-dialog-content>
+        <form [formGroup]="bookFormGroup">
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" fxLayoutGap="20px">                   
+                <div fxFlex="50%">
+                    <div>
+                        <mat-label>Book cover</mat-label>   
+                        <input type="file" (change)="onCoverImgChange($event)">                                 
+                    </div>  
+                </div> 
+                <div fxFlex="50%">                     
+                    <div class="cover-img">
+                        <img [src]="bookFormGroup.get('cover').value">
+                    </div>
+                </div>    
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Book name</mat-label>
+                    <input name="name" formControlName="name" type="text" matInput required>
+                    <mat-error *ngIf="bookFormGroup.get('name').hasError('required')">
+                        Book name is required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Book author</mat-label>
+                    <input name="name" formControlName="author" type="text" matInput required>
+                    <mat-error *ngIf="bookFormGroup.get('author').hasError('required')">
+                        Book author is required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">              
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Book category</mat-label>
+                    <input matInput placeholder="Choose a category" [matAutocomplete]="auto" formControlName='category'>
+                    <mat-error *ngIf="bookFormGroup.get('category').hasError('required')">
+                        Category is required
+                    </mat-error>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="50"></mat-spinner></mat-option>
+                        <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let b of filteredCategories" [value]="b">
+                                <span>{{ b.name }}</span>
+                            </mat-option>
+                        </ng-container>
+                </mat-autocomplete>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Book publication date</mat-label>     
+                    <input matInput readonly [matDatepicker]="sdate" 
+                        name="publication" 
+                        formControlName="publication" matInput required>
+                    <mat-datepicker-toggle matSuffix [for]="sdate">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #sdate></mat-datepicker>
+                    <mat-error *ngIf="bookFormGroup.get('publication').hasError('required')">
+                        Book publication date is required
+                    </mat-error>
+                </mat-form-field> 
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Book status</mat-label>  
+                    <mat-select  name="status" formControlName="status" matInput required>
+                        <mat-option *ngFor="let s of status" [value]="s.value">
+                            {{s.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="bookFormGroup.get('status').hasError('required')">
+                            Book status is required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <ng-container *ngIf="bookFormGroup.get('status').value === false">
+                <div fxLayout="row" fxLayoutAlign="start start">
+                    <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>User borrogin</mat-label>
+                        <input name="borrow_user" formControlName="borrow_user" type="text" matInput>                    
+                    </mat-form-field>
+                </div>
+            </ng-container>
+
+            <!--Buttons-->
+            <div mat-dialog-actions class="m-0 p-16 rd-box-btns-top" fxLayout="row" fxLayoutAlign="end center">                   
+                <button mat-button  
+                    (click)="createBook()"
+                    [disabled]="bookFormGroup.invalid">SAVE
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

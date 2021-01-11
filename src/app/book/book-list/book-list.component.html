@@ -1,0 +1,97 @@
+    <!-- CONTENT -->
+<div class="content fullwidth">
+    <mat-card-header> 
+        <div mat-card-avatar><i class="material-icons rd-settings-ico">local_library</i></div>
+        <mat-card-title>Book Manager</mat-card-title>
+    </mat-card-header>
+    
+    <button mat-fab class="accent" id="add-button" 
+    (click)="newBook()" aria-label="add book" class="rd-add-btn">
+    <mat-icon>add</mat-icon>
+    </button>
+
+    <div class="example-container mat-elevation-z8">
+        <mat-card>
+            <mat-card-content>
+                <mat-form-field appearance="outline" class="p-12" style="width: 100%;" flex>
+                    <mat-label>Filter</mat-label>
+                    <input matInput (keyup)="applyFilter($event.target.value)">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                    <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+
+                    <!-- Cover Column -->
+                    <ng-container matColumnDef="cover">
+                        <th mat-header-cell *matHeaderCellDef> </th>
+                        <td mat-cell *matCellDef="let element">
+                            <ng-container *ngIf="element.cover !== null">
+                                <img class="cover" src={{element.cover}} />
+                            </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+
+                    <!-- Author Column -->
+                    <ng-container matColumnDef="author">
+                        <th mat-header-cell *matHeaderCellDef> Author </th>
+                        <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+                    </ng-container>
+
+                    <!-- Category Column -->
+                    <ng-container matColumnDef="category">
+                        <th mat-header-cell *matHeaderCellDef> Category </th>
+                        <td mat-cell *matCellDef="let element"> {{element.category.name}} </td>
+                    </ng-container>
+
+                    <!-- Publication Column -->
+                    <ng-container matColumnDef="publication">
+                        <th mat-header-cell *matHeaderCellDef> Publication Date </th>
+                        <td mat-cell *matCellDef="let element"> {{element.publication | date: 'MMM d, y'}} </td>
+                    </ng-container>
+
+                     <!-- Status Column -->
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let element"> 
+                        <ng-container *ngIf="element.status === true">
+                            <mat-icon class="green-fg mat-icon notranslate material-icons mat-icon-no-color ng-star-inserted" role="img" aria-hidden="true">done</mat-icon> 
+                        </ng-container>
+                        <ng-container *ngIf="element.status === false">
+                            <mat-icon class="red-fg mat-icon notranslate material-icons mat-icon-no-color ng-star-inserted" role="img" aria-hidden="true">clear</mat-icon> 
+                        </ng-container>
+                        </td>
+                    </ng-container>
+
+                    <!-- Buttons Column -->
+                    <ng-container matColumnDef="buttons">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element">
+                            <button mat-menu-item aria-label="remove" (click)="$event.stopPropagation();deleteBook(element.id)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Remove</span>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="updateBook(row)">
+                    </tr>
+                </table>
+                <mat-paginator [length]="lengthBook" 
+                    [pageSize]="pageSize" 
+                    [pageSizeOptions]="[5, 10, 25, 50]"
+                    (page)="changePage($event)" showFirstLastButtons>
+                </mat-paginator>
+            </mat-card-content>
+        </mat-card>
+    </div> 
+ </div>   
